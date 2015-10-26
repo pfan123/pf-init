@@ -11,10 +11,10 @@ console.log("pf start！");
 
 argv.command("start", "gulp start", function (yargs) {
 console.log("Good Morning");
-gulp.start(["default"]);
+	gulp.start(["get"]);
 })
 .command("replace","gulp replace",function(){
-gulp.start(["replace"])
+	gulp.start(["get"])
 })
 .command("hello","output hello",function(){
 	console.log("output hello")
