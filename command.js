@@ -1,11 +1,12 @@
 ﻿#! /usr/bin/env node
+//资料：https://github.com/tj/commander.js?utm_source=jobboleblog
 
 var program = require('commander'),
 	path = require('path'),
 	fs = require("fs"),
 	readline = require('readline'),
 	gulp = require("gulp"),
-	gulpfile = require("./gulpfile.js")
+	gulpfile = require("./gulpfile.js"),
 	 _exit = process.exit; 
 
 
@@ -32,6 +33,7 @@ program
 
 //添加额外的文档描述
 program.on('help', function() {
+    console.log('');
     console.log('  Examples: pf init projectName');
     console.log('');
     console.log('  # copyright 2015 // questions mailto：768065158@qq.com');
@@ -40,18 +42,19 @@ program.on('help', function() {
 //定义命令  []可选，<>必须
 program
 .command('start <name>')
-.description('Create Project Directory')
+.description('Start gulp project!')
 .action(function(name){
 	gulp.start(["get"]);
 	console.log('Deploying "%s"', name);
 });
 
 program
-.command('init [name]',"Create Project Directory")
-//.description("Create Project Directory")
+.command('init [name]')
+//.alias('ini')
+.description("Create Project Directory")
 .action(function(name){
 	(!exit.exited) && ( main(name) );
-	//console.log('Deploying "%s"', name);
+	console.log('Deploying "%s"', name);
 });
 
 
@@ -61,7 +64,11 @@ program
 //console.log("11111:"+path.join(__dirname, '..', 'templates', "ejs/index.ejs"));
 
 //解析commandline arguments
-program.parse(process.argv)
+program.parse(process.argv);
+
+// console.info('--messsage:')
+// console.log(program.message);
+
 
 //输出结果
 if(!program.args.length) {
@@ -69,23 +76,6 @@ if(!program.args.length) {
 } else {
     console.log('Keywords: ' + program.args);   
 }
-
-// console.info('--messsage:')
-// console.log(program.message);
-
-// console.info('--integer:')
-// console.log(program.integer)
-
-// console.info('--range:')
-// console.log(program.range)
-
-// console.info('--list:')
-// console.log(program.list)
-	
-
-
-
-
 
 
 /**
