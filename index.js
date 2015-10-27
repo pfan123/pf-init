@@ -48,14 +48,6 @@ program.on('help', function() {
 
 //定义命令  []可选，<>必须
 program
-.command('start <name>')
-.description('Start gulp project!')
-.action(function(name){
-	gulp.start(["get"]);
-	console.log('Deploying "%s"', name);
-});
-
-program
 .command('init [name]')
 //.alias('ini')
 .description("Create Project Directory")
@@ -63,6 +55,15 @@ program
 	(!exit.exited) && ( main(name) );
 	console.log('Deploying "%s"', name);
 });
+
+program
+.command('start <name>')
+.description('Start gulp project!')
+.action(function(name){
+	gulp.start(["get"]);
+	console.log('Deploying "%s"', name);
+});
+
 
 
 //返回指定文件名的扩展名称 
@@ -226,11 +227,19 @@ function copyFile(sourcePath,destinationPath){
             fs.stat(url,function(err, stats){
                 if (err) throw err;
                 if(stats.isFile()){
-                    //创建读取流
-                    readable = fs.createReadStream(url);
-                    //创建写入流 
-                    writable = fs.createWriteStream(dest,{ encoding: "utf8" });
-                    readable.pipe(writable);
+                   //匹配到package.json改name字段
+                   if(/package\.json/.test(url)){
+                      var name = "";
+                      (!process.argv[3]) ? name="pfan" : name = process.argv[3]
+                      var str = fs.readFileSync(url,'utf8').replace(/"name"\: "test"/,'"name": "'+name+'"');
+                      fs.writeFileSync(dest,str,'utf8');
+                   }else{                   
+                      //创建读取流
+                      readable = fs.createReadStream(url);
+                      //创建写入流 
+                      writable = fs.createWriteStream(dest,{ encoding: "utf8" });
+                      readable.pipe(writable);
+                   }
                     console.log('   \033[36mcreate\033[0m : ' + dest);
                 }else if(stats.isDirectory()){
                     mkdir( url, dest, copyFile );

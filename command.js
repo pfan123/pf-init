@@ -190,11 +190,19 @@ function copyFile(sourcePath,destinationPath){
             fs.stat(url,function(err, stats){
                 if (err) throw err;
                 if(stats.isFile()){
-                    //创建读取流
-                    readable = fs.createReadStream(url);
-                    //创建写入流 
-                    writable = fs.createWriteStream(dest,{ encoding: "utf8" });
-                    readable.pipe(writable);
+                   //匹配到package.json改name字段
+                   if(/package\.json/.test(url)){
+                      var name = "";
+                      (!process.argv[3]) ? name="pfan" : name = process.argv[3]
+                      var str = fs.readFileSync(url,'utf8').replace(/"name"\: "test"/,'"name": "'+name+'"');
+                      fs.writeFileSync(dest,str,'utf8');
+                   }else{                   
+                      //创建读取流
+                      readable = fs.createReadStream(url);
+                      //创建写入流 
+                      writable = fs.createWriteStream(dest,{ encoding: "utf8" });
+                      readable.pipe(writable);
+                   }
                     console.log('   \033[36mcreate\033[0m : ' + dest);
                 }else if(stats.isDirectory()){
                     mkdir( url, dest, copyFile );
