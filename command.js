@@ -22,14 +22,21 @@ function list (val) {
 program
     .version('0.0.1')
     .usage('[options] [value ...]')
-   // .option('-h, --help',"Docs info of help")
+    .option('-c, --contact','contact information',contact)
+    .option('-a, --author','output program author',author)
     .option('-m, --message <string>', 'a string argument')
     .option('-i, --integer <n>', 'input a integet argument.', parseInt)
     .option('-f, --float <f>', 'input a float arg', parseFloat)
     .option('-l, --list <items>', 'a list', list)
     .option('-r, --range <a>..<b>', 'a range', range)
-    .option('-s, --start','gulp start开始')
+
+function author(){
+	console.log("author@pingfan")
+}
     
+function contact(){
+	console.log("@email:768065158@qq.com")
+}
 
 //添加额外的文档描述
 program.on('help', function() {
@@ -69,9 +76,8 @@ program.parse(process.argv);
 // console.info('--messsage:')
 // console.log(program.message);
 
-
-//输出结果
-if(!program.args.length) {
+//命令没有参数，输出help结果 
+if(!process.argv[2]) {
     program.help();
 } else {
     console.log('Keywords: ' + program.args);   
