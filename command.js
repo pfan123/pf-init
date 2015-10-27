@@ -1,128 +1,48 @@
 ﻿#! /usr/bin/env node
-//资料：https://github.com/tj/commander.js?utm_source=jobboleblog
 
-var program = require('commander'),
+var shell = require("shelljs"),
+	argv = require("yargs"),
 	path = require('path'),
-	fs = require("fs"),
+	fs = require('fs'),
 	readline = require('readline'),
+	child = require("child_process"),
 	gulp = require("gulp"),
+	config = require("./package.json"),
 	gulpfile = require("./gulpfile.js"),
 	 _exit = process.exit; 
 
 
-function range (val) {
-    return val.split('..').map(Number);
-}
-
-function list (val) {
-    return val.split(',')
-}
-
-//定义参数,以及参数内容的描述
-program
-    .version('0.0.1')
-    .usage('[options] [value ...]')
-    .option('-c, --contact','contact information',contact)
-    .option('-a, --author','output program author',author)
-    .option('-m, --message <string>', 'a string argument')
-    .option('-i, --integer <n>', 'input a integet argument.', parseInt)
-    .option('-f, --float <f>', 'input a float arg', parseFloat)
-    .option('-l, --list <items>', 'a list', list)
-    .option('-r, --range <a>..<b>', 'a range', range)
-
-function author(){
-	console.log("author@pingfan")
-}
-    
-function contact(){
-	console.log("@email:768065158@qq.com")
-}
-
-//添加额外的文档描述
-program.on('help', function() {
-    console.log('');
-    console.log('  Examples: pf init projectName');
-    console.log('');
-    console.log('  # copyright 2015 // questions mailto：768065158@qq.com');
-});
-
-//定义命令  []可选，<>必须
-program
-.command('start <name>')
-.description('Start gulp project!')
-.action(function(name){
-	gulp.start(["get"]);
-	console.log('Deploying "%s"', name);
-});
-
-program
-.command('init [name]')
-//.alias('ini')
-.description("Create Project Directory")
-.action(function(name){
-	(!exit.exited) && ( main(name) );
-	console.log('Deploying "%s"', name);
-});
 
 
-//返回指定文件名的扩展名称 
-//console.log(path.extname("pp/index.html"));
-//__dirname始终指向当前js代码文件的目录
-//console.log("11111:"+path.join(__dirname, '..', 'templates', "ejs/index.ejs"));
+function init(yargs){
+	var arguments = yargs.argv._;
+	//获取输入的第二个参数
+	var destinationPath = arguments[1] || '.',
+  	    sourcePath = path.join(__dirname, '.', 'templates');
 
-//解析commandline arguments
-program.parse(process.argv);
+  	 // App name  path.resolve(opt)生成当前路径/opt
+ 	 var appName = path.basename(path.resolve(destinationPath)); 
 
-// console.info('--messsage:')
-// console.log(program.message);
-
-//命令没有参数，输出help结果 
-if(!process.argv[2]) {
-    program.help();
-} else {
-    console.log('Keywords: ' + program.args);   
-}
-
-
-/**
- * Main program. 脚手架主要控制方法
- */
-function main(projectPath) {
-
-  // Path  如果输入空的参数，则默认为当前目录 获取第一个参数
-  //var destinationPath = program.args.shift() || '.',
-  var destinationPath = projectPath || '.',
-  	  sourcePath = path.join(__dirname, '.', 'templates');
-
-  // App name  path.resolve(opt)生成当前路径/opt
-  var appName = path.basename(path.resolve(destinationPath));
-
-  // Template engine
-  program.template = 'ejs';
-  if (program.ejs) program.template = 'ejs';
-  if (program.hogan) program.template = 'hjs';
-  if (program.hbs) program.template = 'hbs';
-
-  // Generate application
-  emptyDirectory(destinationPath, function (empty) {
-    if (empty || program.force) {
-      complete();
-      mkdir(sourcePath,destinationPath,copyFile);
-     // copyFile(sourcePath,destinationPath)
-    } else {
-      //提示文件路径是否为空，继续是否	
-      confirm('destination is not empty, continue? [y/N] ', function (ok) {
-        if (ok) {
-          complete();
-          process.stdin.destroy();
-          copyFile(sourcePath,destinationPath);
-        } else {
-          console.error('aborting');
-          exit(1);
-        }
-      });
-    }
-  });
+	  // Generate application
+	  emptyDirectory(destinationPath, function (empty) {
+	    if (empty) {
+	      complete();
+	      mkdir(sourcePath,destinationPath,copyFile);
+	     // copyFile(sourcePath,destinationPath)
+	    } else {
+	      //提示文件路径是否为空，继续是否	
+	      confirm('destination is not empty, continue? [y/N] ', function (ok) {
+	        if (ok) {
+	          complete();
+	          process.stdin.destroy();
+	          copyFile(sourcePath,destinationPath);
+	        } else {
+	          console.error('aborting');
+	          exit(1);
+	        }
+	      });
+	    }
+	  });
 
  // var wait = 5;
   function complete() {
@@ -142,9 +62,36 @@ function main(projectPath) {
 	    }
 
 	    console.log();
-  }
-
+  }	   	    
 }
+
+
+/**
+ * [定义命令]
+ * @param  {[type]} 第一个参数，命令
+ * @param  {[type]} 第二个参数，描述
+ * @param  {[type]} 第二个参数，回调函数
+ */
+argv.command("init","Create Project Directory",init)
+	.command("start", "gulp start", function (yargs) {
+		console.log("Good Morning");
+		gulp.start(["get"]);
+	})
+	.command("replace","gulp replace",function(){
+		gulp.start(["get"])
+	})
+	.command("hello","output hello",function(){
+		console.log("output hello")
+	})
+
+.usage('Usage: pf [options]')
+.example('pf init projectname', 'create a new project')
+.help('h')
+.alias('h', 'help')
+.epilog('copyright 2015 // questions mailto: chenpan@jd.com')
+.argv;
+
+
 
 /**
  * Determine if launched from cmd.exe
@@ -179,6 +126,23 @@ function exit(code) {
   });
 
   done();
+}
+
+/**
+ * [confirm Prompt for confirmation on STDOUT/STDIN]命令窗口，关闭和结束进程
+ * @param  {[type]}   msg      [description]
+ * @param  {Function} callback [description]
+ */
+function confirm(msg, callback) {
+  var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  rl.question(msg, function (input) {
+    rl.close();
+    callback(/^y|yes|ok|true$/i.test(input));
+  });
 }
 
 /**
@@ -259,3 +223,5 @@ function mkdir(sourcePath,destinationPath,fn){
 	});
   }
 }
+
+
