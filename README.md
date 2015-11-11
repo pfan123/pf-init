@@ -9,15 +9,21 @@
 >Usage： [options] [value ...]
 
 >Commands：
+
 >	init [name]    Create Project Directory
->	start <name>   Start gulp project!
+
+>	start*<*name>   Start gulp project!
 
 >Options：
 
 >	-h, --help         output usage information
+>	
 >	-v, --version      output the version number
+>	
 >	-c, --contact      contact information
+>	
 >	-a, --author       output program author
+>	
 >	-m, --message <string>    a string argument
 
 
