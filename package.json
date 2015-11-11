@@ -1,6 +1,6 @@
 {
   "name": "pf-init",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "FE AUTO TOOL",
   "main": "index.js",
   "scripts": {
