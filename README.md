@@ -2,7 +2,7 @@
 >pf-init 扩展脚手架工具，可以快速帮我们构建开发目录，提高开发效率，当然，我们还可以自定义扩展自己需要的命令。
 
 ## pf-init Install
->$ npm install commander
+>$ npm install pf-init
 
 ## Option parsing
 
