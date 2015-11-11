@@ -88,7 +88,7 @@ argv.command("init","Create Project Directory",init)
 .example('pf init projectname', 'create a new project')
 .help('h')
 .alias('h', 'help')
-.epilog('copyright 2015 // questions mailto: chenpan@jd.com')
+.epilog('copyright 2015 // questions mailto: 768065158@qq.com')
 .argv;
 
 
