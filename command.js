@@ -16,21 +16,31 @@ var shell = require("shelljs"),
 
 function init(yargs){
 	var arguments = yargs.argv._;
-	//获取输入的第二个参数
+  /**
+   * 获取输入的第二个参数
+   */
 	var destinationPath = arguments[1] || '.',
   	    sourcePath = path.join(__dirname, '.', 'templates');
 
-  	 // App name  path.resolve(opt)生成当前路径/opt
+     /**
+      * App name  path.resolve(opt)生成当前路径/opt
+      */
  	 var appName = path.basename(path.resolve(destinationPath)); 
 
-	  // Generate application
+    /**
+     * Generate application
+     */
 	  emptyDirectory(destinationPath, function (empty) {
 	    if (empty) {
 	      complete();
 	      mkdir(sourcePath,destinationPath,copyFile);
-	     // copyFile(sourcePath,destinationPath)
+       /**
+        * copyFile(sourcePath,destinationPath)
+        */
 	    } else {
-	      //提示文件路径是否为空，继续是否	
+        /**
+         * 提示文件路径是否为空，继续是否  
+         */
 	      confirm('destination is not empty, continue? [y/N] ', function (ok) {
 	        if (ok) {
 	          complete();
@@ -44,9 +54,9 @@ function init(yargs){
 	    }
 	  });
 
- // var wait = 5;
+ /* var wait = 5;*/
   function complete() {
-	   // if (--wait) return;
+	   /* if (--wait) return;*/
 	    var prompt = launchedFromCmd() ? '>' : '$';
 
 	    console.log();
@@ -107,9 +117,11 @@ function launchedFromCmd() {
  */
 
 function exit(code) {
-  // flush output for Node.js Windows pipe bug
-  // https://github.com/joyent/node/issues/6247 is just one bug example
-  // https://github.com/visionmedia/mocha/issues/333 has a good discussion
+  /*
+    *flush output for Node.js Windows pipe bug
+    *https://github.com/joyent/node/issues/6247 is just one bug example
+    *https://github.com/visionmedia/mocha/issues/333 has a good discussion
+   */
   function done() {
     if (!(draining--)) _exit(code);
   }
@@ -120,7 +132,7 @@ function exit(code) {
   exit.exited = true;
 
   streams.forEach(function(stream){
-    // submit empty write request and wait for completion
+    /** submit empty write request and wait for completion */
     draining += 1;
     stream.write('', done);
   });
@@ -190,16 +202,16 @@ function copyFile(sourcePath,destinationPath){
             fs.stat(url,function(err, stats){
                 if (err) throw err;
                 if(stats.isFile()){
-                   //匹配到package.json改name字段
+                   /**匹配到package.json改name字段*/
                    if(/package\.json/.test(url)){
                       var name = "";
                       (!process.argv[3]) ? name="pfan" : name = process.argv[3]
                       var str = fs.readFileSync(url,'utf8').replace(/"name"\: "test"/,'"name": "'+name+'"');
                       fs.writeFileSync(dest,str,'utf8');
                    }else{                   
-                      //创建读取流
+                      /*创建读取流*/
                       readable = fs.createReadStream(url);
-                      //创建写入流 
+                      /*创建写入流*/ 
                       writable = fs.createWriteStream(dest,{ encoding: "utf8" });
                       readable.pipe(writable);
                    }
