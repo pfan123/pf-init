@@ -1,5 +1,6 @@
-﻿#! /usr/bin/env node
-/**
+﻿#!/usr/bin/env node
+
+/*
  * mac 和 linux 不支持 //注释
  * 资料：https://github.com/tj/commander.js?utm_source=jobboleblog
  */
@@ -22,7 +23,7 @@ function list (val) {
     return val.split(',')
 }
 
-/**
+/*
  * 定义参数,以及参数内容的描述
  */
 program
@@ -44,7 +45,7 @@ function contact(){
 	console.log("@email:768065158@qq.com")
 }
 
-/**
+/*
  * 添加额外的文档描述
  */
 program.on('help', function() {
@@ -54,7 +55,7 @@ program.on('help', function() {
     console.log('  # copyright 2015 // questions mailto：768065158@qq.com');
 });
 
-/**
+/*
  * 定义命令  []可选，<>必须
  */
 program
@@ -81,16 +82,16 @@ program
  console.log("11111:"+path.join(__dirname, '..', 'templates', "ejs/index.ejs"));
 */
 
-/**
+/*
  * 解析commandline arguments
  */
 program.parse(process.argv);
 
-/** console.info('--messsage:')
+/* console.info('--messsage:')
 * console.log(program.message);
 */
 
-/**
+/*
  * 命令没有参数，输出help结果
  */
 if(!process.argv[2]) {
@@ -100,7 +101,7 @@ if(!process.argv[2]) {
 }
 
 
-/**
+/*
  * Main program. 脚手架主要控制方法
  */
 function main(projectPath) {
@@ -112,7 +113,7 @@ function main(projectPath) {
   	  sourcePath = path.join(__dirname, '.', 'templates');
 
   /*
-   ** App name  path.resolve(opt)生成当前路径/opt
+   * App name  path.resolve(opt)生成当前路径/opt
   */
   var appName = path.basename(path.resolve(destinationPath));
 
@@ -151,7 +152,7 @@ function main(projectPath) {
     }
   });
 
- /**
+ /*
   * var wait = 5;
   */
   function complete() {
@@ -177,7 +178,7 @@ function main(projectPath) {
 
 }
 
-/**
+/*
  * Determine if launched from cmd.exe
  */
 
@@ -186,7 +187,7 @@ function launchedFromCmd() {
     && process.env._ === undefined;
 }
 
-/**
+/*
  * Graceful exit for async STDIO
  */
 
@@ -215,7 +216,7 @@ function exit(code) {
   done();
 }
 
-/**
+/*
  * [confirm Prompt for confirmation on STDOUT/STDIN]命令窗口，关闭和结束进程
  * @param  {[type]}   msg      [description]
  * @param  {Function} callback [description]
@@ -233,7 +234,7 @@ function confirm(msg, callback) {
 }
 
 
-/**
+/*
  * [emptyDirectory  Check if the given directory `path` is empty.]
  * @param  {[type]}   path [description]
  * @param  {Function} fn   [description]
@@ -246,7 +247,7 @@ function emptyDirectory(path, fn) {
 }
 
 
-/**
+/*
  * [copyFile 拷贝文件]
  * @param  {[type]}   sourcePath 输入路径
  * @param  {[type]}   destinationPath 目标路径
@@ -285,7 +286,7 @@ function copyFile(sourcePath,destinationPath){
 }
 
 
-/**
+/*
  * [mkdir 写入文件夹同步，如果存在则提示]  
  * @param  {[type]}   sourcePath 输入路径
  * @param  {[type]}   destinationPath 目标路径

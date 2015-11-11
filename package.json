@@ -1,6 +1,6 @@
 {
   "name": "pf-init",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "FE AUTO TOOL",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,9 @@
     "pf",
     "init"
   ],
-  "author": "pingfan",
+  "author": {
+    "name": "pingfan"
+  },
   "license": "ISC",
   "dependencies": {
     "commander": "^2.9.0",
@@ -30,5 +32,11 @@
   "bugs": {
     "url": "https://github.com/pfan123/pf-init/issues"
   },
-  "homepage": "https://github.com/pfan123/pf-init"
+  "homepage": "https://github.com/pfan123/pf-init",
+  "readme": "## pf-init 扩展脚手架工具\r\n>pf-init 扩展脚手架工具，可以快速帮我们构建开发目录，提高开发效率，当然，我们还可以自定义扩展自己需要的命令。\r\n\r\n## pf-init Install\r\n>$ npm install pf-init\r\n\r\n## Option parsing\r\n\r\n>Usage： [options] [value ...]\r\n\r\n>Commands：\r\n\r\n>\tinit [name]    Create Project Directory\r\n\r\n>\tstart*<*name>   Start gulp project!\r\n\r\n>Options：\r\n\r\n>\t-h, --help         output usage information\r\n>\t\r\n>\t-v, --version      output the version number\r\n>\t\r\n>\t-c, --contact      contact information\r\n>\t\r\n>\t-a, --author       output program author\r\n>\t\r\n>\t-m, --message <string>    a string argument\r\n\r\n\r\n\r\n>目前pf-init脚手架还不是特别完善，后续将会陆续补充，欢迎拍砖",
+  "readmeFilename": "README.md",
+  "gitHead": "7a897862341a1894284585d23fa5eec3381ce97a",
+  "_id": "pf-init@1.0.5",
+  "_shasum": "a3c0fa6cb01bece05e14cd423bee7a8ce56d1d59",
+  "_from": "pf-init@*"
 }

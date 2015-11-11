@@ -1,4 +1,4 @@
-﻿#! /usr/bin/env node
+﻿#!/usr/bin/env node
 
 var shell = require("shelljs"),
 	argv = require("yargs"),
@@ -16,29 +16,29 @@ var shell = require("shelljs"),
 
 function init(yargs){
 	var arguments = yargs.argv._;
-  /**
+  /*
    * 获取输入的第二个参数
    */
 	var destinationPath = arguments[1] || '.',
   	    sourcePath = path.join(__dirname, '.', 'templates');
 
-     /**
+     /*
       * App name  path.resolve(opt)生成当前路径/opt
       */
  	 var appName = path.basename(path.resolve(destinationPath)); 
 
-    /**
+    /*
      * Generate application
      */
 	  emptyDirectory(destinationPath, function (empty) {
 	    if (empty) {
 	      complete();
 	      mkdir(sourcePath,destinationPath,copyFile);
-       /**
+       /*
         * copyFile(sourcePath,destinationPath)
         */
 	    } else {
-        /**
+        /*
          * 提示文件路径是否为空，继续是否  
          */
 	      confirm('destination is not empty, continue? [y/N] ', function (ok) {
@@ -76,7 +76,7 @@ function init(yargs){
 }
 
 
-/**
+/*
  * [定义命令]
  * @param  {[type]} 第一个参数，命令
  * @param  {[type]} 第二个参数，描述
@@ -103,7 +103,7 @@ argv.command("init","Create Project Directory",init)
 
 
 
-/**
+/*
  * Determine if launched from cmd.exe
  */
 
@@ -112,7 +112,7 @@ function launchedFromCmd() {
     && process.env._ === undefined;
 }
 
-/**
+/*
  * Graceful exit for async STDIO
  */
 
@@ -132,7 +132,7 @@ function exit(code) {
   exit.exited = true;
 
   streams.forEach(function(stream){
-    /** submit empty write request and wait for completion */
+    /* submit empty write request and wait for completion */
     draining += 1;
     stream.write('', done);
   });
@@ -140,7 +140,7 @@ function exit(code) {
   done();
 }
 
-/**
+/*
  * [confirm Prompt for confirmation on STDOUT/STDIN]命令窗口，关闭和结束进程
  * @param  {[type]}   msg      [description]
  * @param  {Function} callback [description]
@@ -157,7 +157,7 @@ function confirm(msg, callback) {
   });
 }
 
-/**
+/*
  * [confirm Prompt for confirmation on STDOUT/STDIN]命令窗口，关闭和结束进程
  * @param  {[type]}   msg      [description]
  * @param  {Function} callback [description]
@@ -175,7 +175,7 @@ function confirm(msg, callback) {
 }
 
 
-/**
+/*
  * [emptyDirectory  Check if the given directory `path` is empty.]
  * @param  {[type]}   path [description]
  * @param  {Function} fn   [description]
@@ -188,7 +188,7 @@ function emptyDirectory(path, fn) {
 }
 
 
-/**
+/*
  * [copyFile 拷贝文件]
  * @param  {[type]}   sourcePath 输入路径
  * @param  {[type]}   destinationPath 目标路径
@@ -202,7 +202,7 @@ function copyFile(sourcePath,destinationPath){
             fs.stat(url,function(err, stats){
                 if (err) throw err;
                 if(stats.isFile()){
-                   /**匹配到package.json改name字段*/
+                   /*匹配到package.json改name字段*/
                    if(/package\.json/.test(url)){
                       var name = "";
                       (!process.argv[3]) ? name="pfan" : name = process.argv[3]
@@ -225,7 +225,7 @@ function copyFile(sourcePath,destinationPath){
 }
 
 
-/**
+/*
  * [mkdir 写入文件夹同步，如果存在则提示]  
  * @param  {[type]}   sourcePath 输入路径
  * @param  {[type]}   destinationPath 目标路径
