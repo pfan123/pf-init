@@ -1,18 +1,17 @@
-﻿#!/usr/bin/env node
+#!/usr/bin/env node
 
 /*
  * mac 和 linux 不支持 //注释
  * 资料：https://github.com/tj/commander.js?utm_source=jobboleblog
  */
 
-
 var program = require('commander'),
-	path = require('path'),
-	fs = require("fs"),
-	readline = require('readline'),
-	gulp = require("gulp"),
-	gulpfile = require("./gulpfile.js"),
-	 _exit = process.exit; 
+  path = require('path'),
+  fs = require("fs"),
+  readline = require('readline'),
+  gulp = require("gulp"),
+  gulpfile = require("./gulpfile.js"),
+   _exit = process.exit; 
 
 
 function range (val) {
@@ -38,11 +37,11 @@ program
     .option('-r, --range <a>..<b>', 'a range', range)
 
 function author(){
-	console.log("author@pingfan")
+  console.log("author@pingfan")
 }
     
 function contact(){
-	console.log("@email:768065158@qq.com")
+  console.log("@email:768065158@qq.com")
 }
 
 /*
@@ -62,16 +61,16 @@ program
 .command('init [name]')
 .description("Create Project Directory")
 .action(function(name){
-	(!exit.exited) && ( main(name) );
-	console.log('Deploying "%s"', name);
+  (!exit.exited) && ( main(name) );
+  console.log('Deploying "%s"', name);
 });
 
 program
 .command('start <name>')
 .description('Start gulp project!')
 .action(function(name){
-	gulp.start(["get"]);
-	console.log('Deploying "%s"', name);
+  gulp.start(["get"]);
+  console.log('Deploying "%s"', name);
 });
 
 
@@ -110,7 +109,7 @@ function main(projectPath) {
   *var destinationPath = program.args.shift() || '.',
   */
   var destinationPath = projectPath || '.',
-  	  sourcePath = path.join(__dirname, '.', 'templates');
+      sourcePath = path.join(__dirname, '.', 'templates');
 
   /*
    * App name  path.resolve(opt)生成当前路径/opt
@@ -156,24 +155,24 @@ function main(projectPath) {
   * var wait = 5;
   */
   function complete() {
-	   /* 
+     /* 
       ** if (--wait) return;
      */
-	    var prompt = launchedFromCmd() ? '>' : '$';
+      var prompt = launchedFromCmd() ? '>' : '$';
 
-	    console.log();
-	    console.log('   \033[36minstall dependencies:\033[0m');
-	    console.log('     %s cd %s && npm install', prompt, appName);
-	    console.log();
-	    console.log('   \033[36mrun the app:\033[0m');
+      console.log();
+      console.log('   \033[36minstall dependencies:\033[0m');
+      console.log('     %s cd %s && npm install', prompt, appName);
+      console.log();
+      console.log('   \033[36mrun the app:\033[0m');
 
-	    if (launchedFromCmd()) {
-	      console.log('     %s SET DEBUG=%s:* & npm start', prompt, appName);
-	    } else {
-	      console.log('     %s DEBUG=%s:* npm start', prompt, appName);
-	    }
+      if (launchedFromCmd()) {
+        console.log('     %s SET DEBUG=%s:* & npm start', prompt, appName);
+      } else {
+        console.log('     %s DEBUG=%s:* npm start', prompt, appName);
+      }
 
-	    console.log();
+      console.log();
   }
 
 }
@@ -282,7 +281,7 @@ function copyFile(sourcePath,destinationPath){
                 }
             });
         });
-    });	
+    }); 
 }
 
 
@@ -294,13 +293,13 @@ function copyFile(sourcePath,destinationPath){
  */
 function mkdir(sourcePath,destinationPath,fn){
   if(fs.existsSync(destinationPath)){
-	    console.log('   \033[36mno create,file exist path\033[0m : ' + destinationPath);
-	    fn && fn(sourcePath,destinationPath);
-  }else{ 	
-	fs.mkdir(destinationPath,0755,function(err){
-		if(err) throw err;
-		console.log('   \033[36mcreate\033[0m : ' + destinationPath);
-   		fn && fn(sourcePath,destinationPath);
-	});
+      console.log('   \033[36mno create,file exist path\033[0m : ' + destinationPath);
+      fn && fn(sourcePath,destinationPath);
+  }else{  
+  fs.mkdir(destinationPath,0755,function(err){
+    if(err) throw err;
+    console.log('   \033[36mcreate\033[0m : ' + destinationPath);
+      fn && fn(sourcePath,destinationPath);
+  });
   }
 }

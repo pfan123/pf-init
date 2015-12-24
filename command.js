@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env node
+#!/usr/bin/env node
 
 var shell = require("shelljs"),
 	argv = require("yargs"),
@@ -243,5 +243,3 @@ function mkdir(sourcePath,destinationPath,fn){
 	});
   }
 }
-
-
