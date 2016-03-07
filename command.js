@@ -9,10 +9,7 @@ var shell = require("shelljs"),
 	gulp = require("gulp"),
 	config = require("./package.json"),
 	gulpfile = require("./gulpfile.js"),
-	 _exit = process.exit; 
-
-
-
+	 _exit = process.exit;
 
 function init(yargs){
 	var arguments = yargs.argv._;
@@ -25,7 +22,7 @@ function init(yargs){
      /*
       * App name  path.resolve(opt)生成当前路径/opt
       */
- 	 var appName = path.basename(path.resolve(destinationPath)); 
+ 	 var appName = path.basename(path.resolve(destinationPath));
 
     /*
      * Generate application
@@ -39,7 +36,7 @@ function init(yargs){
         */
 	    } else {
         /*
-         * 提示文件路径是否为空，继续是否  
+         * 提示文件路径是否为空，继续是否
          */
 	      confirm('destination is not empty, continue? [y/N] ', function (ok) {
 	        if (ok) {
@@ -72,7 +69,7 @@ function init(yargs){
 	    }
 
 	    console.log();
-  }	   	    
+  }
 }
 
 
@@ -199,6 +196,7 @@ function copyFile(sourcePath,destinationPath){
         files.forEach(function(filename){
             var url = path.join(sourcePath,filename),
                 dest = path.join(destinationPath,filename);
+						if(filename == ".DS_Store"){return;}
             fs.stat(url,function(err, stats){
                 if (err) throw err;
                 if(stats.isFile()){
@@ -208,10 +206,10 @@ function copyFile(sourcePath,destinationPath){
                       (!process.argv[3]) ? name="pfan" : name = process.argv[3]
                       var str = fs.readFileSync(url,'utf8').replace(/"name"\: "test"/,'"name": "'+name+'"');
                       fs.writeFileSync(dest,str,'utf8');
-                   }else{                   
+                   }else{
                       /*创建读取流*/
                       readable = fs.createReadStream(url);
-                      /*创建写入流*/ 
+                      /*创建写入流*/
                       writable = fs.createWriteStream(dest,{ encoding: "utf8" });
                       readable.pipe(writable);
                    }
@@ -221,21 +219,21 @@ function copyFile(sourcePath,destinationPath){
                 }
             });
         });
-    });	
+    });
 }
 
 
 /*
- * [mkdir 写入文件夹同步，如果存在则提示]  
+ * [mkdir 写入文件夹同步，如果存在则提示]
  * @param  {[type]}   sourcePath 输入路径
  * @param  {[type]}   destinationPath 目标路径
- * @param  {Function} fn   
+ * @param  {Function} fn
  */
 function mkdir(sourcePath,destinationPath,fn){
   if(fs.existsSync(destinationPath)){
 	    console.log('   \033[36mno create,file exist path\033[0m : ' + destinationPath);
 	    fn && fn(sourcePath,destinationPath);
-  }else{ 	
+  }else{
 	fs.mkdir(destinationPath,0755,function(err){
 		if(err) throw err;
 		console.log('   \033[36mcreate\033[0m : ' + destinationPath);

@@ -1,0 +1,17 @@
+＃ ignore list orders
+
+DS_Store
+Thumbs.db
+.DS_Store
+.DS_store?
+*.swp
+._*
+ehthumbs.db
+*.log
+.sass-cache
+
+**.DS_Store
+*/*.DS_Store
+chrome.gitignore
+*.DS_Store
+
