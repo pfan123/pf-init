@@ -11,8 +11,12 @@ var program = require('commander'),
   readline = require('readline'),
   gulp = require("gulp"),
   gulpfile = require("./gulpfile.js"),
-   _exit = process.exit; 
+   _exit = process.exit,
+   chalk = require("chalk"),
+   exec = require('child_process').exec;
+var processPath = process.cwd();
 
+var pfData = JSON.parse(readToFile(path.join(__dirname,"config.json"),function(err){if(err)throw err}));
 
 function range (val) {
     return val.split('..').map(Number);
@@ -39,7 +43,7 @@ program
 function author(){
   console.log("author@pingfan")
 }
-    
+
 function contact(){
   console.log("@email:768065158@qq.com")
 }
@@ -55,14 +59,42 @@ program.on('help', function() {
 });
 
 /*
- * 定义命令  []可选，<>必须
+ * 定义命令  []可选，<>必须 name 项目名字，模板
  */
 program
-.command('init [name]')
+.command('init [name] [temp]')
 .description("Create Project Directory")
-.action(function(name){
-  (!exit.exited) && ( main(name) );
-  console.log('Deploying "%s"', name);
+.action(function(name,temp){
+  (!exit.exited) && ( main(name,temp) );
+  // console.log('Deploying "%s"', name);
+});
+
+/*
+ *设置依赖包路径，安装依赖包
+ */
+program
+.command('set')
+.description("Create Project Directory")
+.action(function(){
+  if ( fs.existsSync(path.join(processPath, 'config.json'))){
+      pfPath = processPath;
+  } else {
+      console.error( "Error: please enter config.json path" );
+      throw "error";
+  }
+  pfData.pfPath = pfPath;
+  writeToFile(pfData,path.join(__dirname,"config.json"),function(){
+    console.log(chalk.red(curTime())+ chalk.green(" 文件依赖写入成功!"));
+    console.log(chalk.red(curTime())+ chalk.green(" 开始安装npm module包……"));
+    exec('npm i', function (error, stdout, stderr) {
+      if (error) {
+        // console.log(error.stack);
+        console.log(chalk.red(curTime())+ chalk.green(' 安装npm依赖模块失败Error code: ' + error.code));
+        return ;
+      }
+      console.log(chalk.red(curTime())+ chalk.green(" 安装npm依赖模块成功"));
+    });
+  });
 });
 
 program
@@ -75,7 +107,7 @@ program
 
 
 
-/*返回指定文件名的扩展名称 
+/*返回指定文件名的扩展名称
   console.log(path.extname("pp/index.html"));
   __dirname始终指向当前js代码文件的目录
  console.log("11111:"+path.join(__dirname, '..', 'templates', "ejs/index.ejs"));
@@ -96,20 +128,33 @@ program.parse(process.argv);
 if(!process.argv[2]) {
     program.help();
 } else {
-    console.log('Keywords: ' + program.args);   
+    //不打印关键字
+    // console.log('Keywords: ' + program.args);
 }
 
 
 /*
  * Main program. 脚手架主要控制方法
  */
-function main(projectPath) {
+function main(projectPath,temp) {
+  temp && temp != "" ? temp : temp = "default";
+
+  if(pfData.pfPath == undefined){
+    console.log(chalk.red(curTime())+ chalk.green(" 请先pf set 设置依赖路径，安装npm包！"));
+    return ;
+  }else{
+    if (!fs.existsSync(path.join(pfData.pfPath, 'config.json'))){
+        console.log(chalk.red(curTime())+ chalk.green(" 请先pf set 设置正确的依赖路径，安装npm包！"));
+        return ;
+    }
+  }
 
   /* Path  如果输入空的参数，则默认为当前目录 获取第一个参数
   *var destinationPath = program.args.shift() || '.',
   */
   var destinationPath = projectPath || '.',
-      sourcePath = path.join(__dirname, '.', 'templates');
+      // sourcePath = path.join(__dirname, '.', 'templates');
+      sourcePath = path.join(pfData.pfPath, '.', 'templates/'+temp);
 
   /*
    * App name  path.resolve(opt)生成当前路径/opt
@@ -118,7 +163,7 @@ function main(projectPath) {
 
   /*
     Template engine
-   */ 
+   */
   program.template = 'ejs';
   if (program.ejs) program.template = 'ejs';
   if (program.hogan) program.template = 'hjs';
@@ -133,7 +178,7 @@ function main(projectPath) {
       mkdir(sourcePath,destinationPath,copyFile);
      /*
       * copyFile(sourcePath,destinationPath)
-      */ 
+      */
     } else {
       /**
        * 提示文件路径是否为空，继续是否
@@ -155,7 +200,7 @@ function main(projectPath) {
   * var wait = 5;
   */
   function complete() {
-     /* 
+     /*
       ** if (--wait) return;
      */
       var prompt = launchedFromCmd() ? '>' : '$';
@@ -257,6 +302,7 @@ function copyFile(sourcePath,destinationPath){
         files.forEach(function(filename){
             var url = path.join(sourcePath,filename),
                 dest = path.join(destinationPath,filename);
+            if(filename == ".DS_Store"){return;}
             fs.stat(url,function(err, stats){
                 if (err) throw err;
                 if(stats.isFile()){
@@ -266,9 +312,11 @@ function copyFile(sourcePath,destinationPath){
                    if(/package\.json/.test(url)){
                       var name = "";
                       (!process.argv[3]) ? name="pfan" : name = process.argv[3]
-                      var str = fs.readFileSync(url,'utf8').replace(/"name"\: "test"/,'"name": "'+name+'"');
-                      fs.writeFileSync(dest,str,'utf8');
-                   }else{                   
+                      var packData = JSON.parse(readToFile(url));
+                      packData.name = name;
+                    	packData = JSON.stringify(packData,null, "\t");
+                      fs.writeFileSync(dest,packData,'utf8');
+                   }else{
                       /*创建读取流*/
                       readable = fs.createReadStream(url);
                       /*创建写入流 */
@@ -281,25 +329,64 @@ function copyFile(sourcePath,destinationPath){
                 }
             });
         });
-    }); 
+    });
 }
 
 
 /*
- * [mkdir 写入文件夹同步，如果存在则提示]  
+ * [mkdir 写入文件夹同步，如果存在则提示]
  * @param  {[type]}   sourcePath 输入路径
  * @param  {[type]}   destinationPath 目标路径
- * @param  {Function} fn   
+ * @param  {Function} fn
  */
 function mkdir(sourcePath,destinationPath,fn){
   if(fs.existsSync(destinationPath)){
       console.log('   \033[36mno create,file exist path\033[0m : ' + destinationPath);
       fn && fn(sourcePath,destinationPath);
-  }else{  
+  }else{
   fs.mkdir(destinationPath,0755,function(err){
     if(err) throw err;
     console.log('   \033[36mcreate\033[0m : ' + destinationPath);
       fn && fn(sourcePath,destinationPath);
   });
   }
+}
+
+
+/*
+ * [writeToFile description]
+ * @param  {[type]} data [数组数据列表]
+ * @param  {[type]} path [写入的路径]
+ */
+ function writeToFile(data,path,calllback){
+ 	var data = JSON.stringify(data,null, "\t");
+ 	fs.writeFile(path,data,"utf-8",function(err){
+ 		if(err) throw err;
+ 		calllback && calllback();
+ 	});
+ }
+
+ /*
+ * [readToFile 读取文件]
+ * @param  {[type]} path [读取路径]
+ */
+function readToFile(path,calllback){
+	var data = fs.readFileSync(path,'UTF-8');
+	calllback && calllback();
+	return data;
+}
+
+
+/*
+ * [curTime 生成当前时间 例［2016-03-07 19:00:00］]
+ * @return {[type]} [description]
+ */
+function curTime() {
+    var date = new Date();
+    var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+    var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    var hh = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+    var mm = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+    return "["+date.getFullYear() + "-" + month + "-" + currentDate+" "+hh + ":" + mm+"]";
+    //返回格式：yyyy-MM-dd hh:mm
 }
