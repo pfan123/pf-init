@@ -20,7 +20,6 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^2.9.0",
-    "gulp": "^3.8.11",
     "shelljs": "^0.5.3",
     "yargs": "^3.25.0"
   },

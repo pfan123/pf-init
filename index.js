@@ -9,8 +9,8 @@ var program = require('commander'),
   path = require('path'),
   fs = require("fs"),
   readline = require('readline'),
-  gulp = require("gulp"),
-  gulpfile = require("./gulpfile.js"),
+  // gulp = require("gulp"),
+  // gulpfile = require("./gulpfile.js"),
    _exit = process.exit,
    chalk = require("chalk"),
    exec = require('child_process').exec;
@@ -101,7 +101,8 @@ program
 .command('start <name>')
 .description('Start gulp project!')
 .action(function(name){
-  gulp.start(["get"]);
+  // gulp.start(["get"]);
+  runGulpTask("get");
   console.log('Deploying "%s"', name);
 });
 
@@ -132,6 +133,24 @@ if(!process.argv[2]) {
     // console.log('Keywords: ' + program.args);
 }
 
+function runGulpTask(task){
+  var projectPath = process.cwd();
+  if(pfData.pfPath == undefined){
+    console.log(chalk.red(curTime())+ chalk.green(" 请先pf set 设置依赖路径，安装npm包！"));
+    return ;
+  }else{
+    if (!fs.existsSync(path.join(pfData.pfPath, 'config.json'))){
+        console.log(chalk.red(curTime())+ chalk.green(" 请先pf set 设置正确的依赖路径，安装npm包！"));
+        return ;
+    }
+  }
+
+  var gulp = require(path.join(pfData.pfPath, 'node_modules','gulp'));
+  require(path.join(pfData.pfPath,'gulpfile.js'));
+
+  console.log(chalk.red(curTime())+ chalk.green("开始执行gulp任务！"));
+  gulp.start([task]);
+}
 
 /*
  * Main program. 脚手架主要控制方法
